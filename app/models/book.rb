@@ -13,7 +13,7 @@ class Book < ApplicationRecord
     self.category = Category.where(name: name).first_or_initialize
   end
 
-  def can_take?(user)
+  def can_be_taken?(user)
     not_taken? && ( available_for_user?(user) || reservations.empty? )
   end
 
@@ -23,7 +23,7 @@ class Book < ApplicationRecord
   end
 
 
-  def can_reserve?(user)
+  def can_be_reserved?(user)
     reservations.find_by(user: user, status: 'RESERVED').nil?
   end
 

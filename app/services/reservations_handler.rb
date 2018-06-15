@@ -4,10 +4,8 @@ class ReservationsHandler
     @book = book
   end
 
-
-
   def reserve
-    return unless book.can_reserve?(user)
+    return "Book is not available for reservation" unless book.can_be_reserved?(user)
     book.reservations.create(user: user, status: 'RESERVED')
   end
 
@@ -16,7 +14,7 @@ class ReservationsHandler
   end
 
   def take
-    return unless book.can_take?(user)
+    return unless book.can_be_taken?(user)
 
     if book.available_reservation.present?
       book.available_reservation.update_attributes(status: 'TAKEN')
