@@ -9,6 +9,7 @@ class ReservationsController < ApplicationController
   def take
     reservation_handler.take
     redirect_to(book_path(book.id))
+    BooksNotifierMailer.send_if_taken(book, current_user).deliver_now
   end
 
   def give_back
