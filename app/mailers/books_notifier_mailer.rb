@@ -9,4 +9,11 @@ class BooksNotifierMailer < ApplicationMailer
     mail(to: user.email, subject: "Book taken")
   end
 
+  def send_if_reserved(book, user)
+    @book = book
+    @user = user
+
+    mail(to: user.email, subject: "Book reserved")
+  end    
+
 end
