@@ -5,7 +5,7 @@ class ReservationsHandler
   end
 
   def reserve
-    return "Book is not available for reservation" unless book.can_be_reserved?(user)
+    return "Book is not available for reservation" unless can_be_reserved?
     book.reservations.create(user: user, status: 'RESERVED')
   end
 
@@ -14,7 +14,7 @@ class ReservationsHandler
   end
 
   def take
-    return unless book.can_be_taken?(user)
+    return unless can_be_taken?
 
     if book.available_reservation.present?
       book.available_reservation.update_attributes(status: 'TAKEN')
@@ -34,7 +34,21 @@ class ReservationsHandler
     book.reservations.where(status: 'RESERVED').order(created_at: :asc).first
   end
 
+  def can_be_taken?
+    not_taken? && ( book.available_for_user?(user) || book.reservations.empty? )
+  end
 
+  def can_give_back?
+    book.reservations.find_by(user: user, status: 'TAKEN').present?
+  end
+
+  def can_be_reserved?
+    book.reservations.find_by(user: user, status: 'RESERVED').nil?
+  end
+
+  def not_taken?
+    book.reservations.find_by(status: 'TAKEN').nil?
+  end
 
   private
   attr_reader :user, :book

@@ -8,8 +8,7 @@ RSpec.describe ReservationsHandler, type: :service do
   describe '#reserve' do
 
     before {
-      allow(book).to receive(:can_be_reserved?)
-      .with(user).and_return(result)
+      allow(subject).to receive(:can_be_reserved?).and_return(result)
     }
 
     context 'without available book' do
@@ -36,8 +35,7 @@ RSpec.describe ReservationsHandler, type: :service do
   describe '#take' do
 
     before {
-      allow(book).to receive(:can_be_taken?)
-      .with(user).and_return(result)
+      allow(subject).to receive(:can_be_taken?).and_return(result)
     }
 
     context 'cannot be taken' do
