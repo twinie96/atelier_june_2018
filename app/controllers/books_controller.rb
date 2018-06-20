@@ -3,14 +3,6 @@ class BooksController < ApplicationController
   before_action :load_book, only: :show
   before_action :new_book, only: :create
 
-  def index
-  end
-
-  def new
-  end
-
-  def edit
-  end
 
   def create
     if new_book.save
@@ -20,14 +12,32 @@ class BooksController < ApplicationController
     end
   end
 
-  def show
-    @reservation_handler ||= ::ReservationsHandler.new(current_user, @book)
+
+
+  def filter
+    render template: 'books/filter', locals: { books: filter_books }
   end
 
-  def destroy
+  def show
   end
+
 
   private
+
+    def filter_params
+      permitted_params
+        .slice(:title, :isbn)
+        .merge(category.present? ? { category_id: category.id } : {})
+        .reject{ |k, v| v.to_s.empty? }
+    end
+
+    def filter_books
+      Book.where(filter_params)
+    end
+
+    def category
+      Category.find_by(name: permitted_params[:category_name])
+    end
 
   def load_books
     @books = Book.all
@@ -38,6 +48,10 @@ class BooksController < ApplicationController
   end
 
   def new_book
-    @book = Book.new(title: params[:title], isbn: params[:isbn], category_name: params[:category_name])
+    @book = Book.new(title: params[:title], isbn: params[:isbn], category_id: params[:category_name])
+  end
+
+  def permitted_params
+    params.permit(:title, :isbn, :category_id, :category_name)
   end
 end
