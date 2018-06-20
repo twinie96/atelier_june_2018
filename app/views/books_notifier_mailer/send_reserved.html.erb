@@ -1,0 +1,11 @@
+
+You've taken a  <%= link_to 'book', book_url(@book.id, host: "localhost:3000") %>.
+
+
+Hey, give the book back!
+
+<h4>Book data: </h4>
+
+Title: <%= @book.title %>
+<br>
+ISBN: <%= @book.isbn %>
