@@ -27,6 +27,7 @@ class BooksNotifierMailer < ApplicationMailer
   def send_reserved(book)
     @book = book
     @reservation = book.reservations.find_by(status: "RESERVED")
+    return unless @reservation
     @borrower = @reservation.user
 
     mail(to: @borrower.email, subject: "Book #{@book.title} reserved is almost there")
