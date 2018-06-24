@@ -1,2 +1,0 @@
-class BookReminderNotifierMailer < ApplicationMailer
-end
