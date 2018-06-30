@@ -1,1 +1,5 @@
-'365799084595-mghduc7fg23tdq26sh2s66j9nukgn439.apps.googleusercontent.com', '4mygHi67CJxchSluoC7NXcPM'
+defaults:
+  google_client_id: '365799084595-mghduc7fg23tdq26sh2s66j9nukgn439.apps.googleusercontent.com'
+  google_client_secret: '4mygHi67CJxchSluoC7NXcPM'
+  default_calendar: { summary: 'Atelier'}
+  app_host: 'http://localhost:3000'

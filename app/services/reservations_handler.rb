@@ -21,12 +21,16 @@ class ReservationsHandler
       book.available_reservation.update_attributes(status: 'TAKEN')
     else
       perform_expiration_worker(book.reservations.create(user: user, status: 'TAKEN'))
-    end
+    end.tap { |reservation|
+     notify_user_calendar(user)
+    }
   end
 
   def give_back
     ActiveRecord::Base.transaction do
-      book.reservations.find_by(status: 'TAKEN').update_attributes(status: 'RETURNED')
+      book.reservations.find_by(status: 'TAKEN').tap { |reservation| reservation.update_attributes(status: 'RETURNED')
+      # notify_user_calendar(reservation)
+      }
       next_in_queue.update_attributes(status: 'AVAILABLE') if next_in_queue.present?
     end
   end
@@ -56,5 +60,9 @@ class ReservationsHandler
 
   def perform_expiration_worker(res)
     ::BookReservationExpireWorker.perform_at(res.expires_at-1.day, res.book_id)
+  end
+
+  def notify_user_calendar(user)
+    UserCalendarNotifier.new(user).perform(reservation)
   end
 end

@@ -1,6 +1,5 @@
 class OmniauthHandler
   def initialize
-    @user = user
   end
 
   def self.from_omniauth(access_token)
