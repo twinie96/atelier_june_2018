@@ -22,7 +22,7 @@ class ReservationsHandler
     else
       perform_expiration_worker(book.reservations.create(user: user, status: 'TAKEN'))
     end.tap { |reservation|
-     notify_user_calendar(user)
+     notify_user_calendar(reservation)
     }
   end
 
@@ -62,7 +62,7 @@ class ReservationsHandler
     ::BookReservationExpireWorker.perform_at(res.expires_at-1.day, res.book_id)
   end
 
-  def notify_user_calendar(user)
-    UserCalendarNotifier.new(user).perform(reservation)
+  def notify_user_calendar(reservation)
+    UserCalendarNotifier.new(reservation.user).perform(reservation)
   end
 end

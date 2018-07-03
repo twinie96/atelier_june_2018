@@ -11,15 +11,15 @@ class UserCalendarNotifier
 
   def perform(reservation)
     find_calendar_by(A9n.default_calendar).tap {|cal|
-   unless calendar.nil?
-    response = client.execute(api_params(cal, reservation))
+      unless calendar.nil?
+        response = client.execute(api_params(cal, reservation))
 
-    if reservation_taken?
-      reservation.update_attributes(
-        calendar_event_oid: response_body_hash(response)['id']
-      )
-    end
-  end
+        if reservation_taken?
+          reservation.update_attributes(
+            calendar_event_oid: response_body_hash(response)['id']
+          )
+        end
+      end
     }
   end
 
@@ -41,7 +41,8 @@ class UserCalendarNotifier
         {
         api_method: service.events.delete,
         parameters: {
-        'calendarId' => reservation.calendar_event_oid
+        'calendarId' => cal['id'],
+        'eventId' => reservation.calendar_event_oid
           }
         }
       end
@@ -62,11 +63,12 @@ class UserCalendarNotifier
   end
 
 
-  def find_calendar
-    json_response = client.execute(api_method: service.calendar_list.list)
-    hash = JSON.parse(json_response.body)
-    items = hash['items']
-    # items.find { |entry| entry['summary'] == 'Atelier' }
+  def calendar_list
+    response_body_hash(client.execute(api method: service.calendar_list.list))['items']
+  end
+
+  def response_body_hash
+    JSON.parse(response.body)
   end
 
   def find_calendar_by(hash)

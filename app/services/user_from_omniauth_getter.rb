@@ -11,7 +11,7 @@ class UserFromOmniauthGetter
       user.email = access_token.info.email
       user.password = Devise.friendly_token[0,20]
       user_token = access_token.credentials.token
-      user.refresh_token = access_token.refresh_token
+      user.refresh_token = access_token.credentials.refresh_token
       user.save
     end
   end
