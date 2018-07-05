@@ -14,6 +14,25 @@ class BooksNotifierMailer < ApplicationMailer
     @user = user
 
     mail(to: user.email, subject: "Book reserved")
-  end    
+  end
+
+  def send_taken_before_due(book)
+    @book = book
+    @reservation = book.reservations.find_by(status: "TAKEN")
+    @borrower = @reservation.user
+
+    mail(to: @borrower.email, subject: "Book #{@book.title} give back is due")
+  end
+
+  def send_reserved(book)
+    @book = book
+    @reservation = book.reservations.find_by(status: "RESERVED")
+    return unless @reservation
+    @borrower = @reservation.user
+
+    mail(to: @borrower.email, subject: "Book #{@book.title} reserved is almost there")
+  end
+
+
 
 end

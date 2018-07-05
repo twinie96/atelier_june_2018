@@ -6,6 +6,9 @@ git_source(:github) do |repo_name|
 end
 
 gem 'devise'
+gem 'omniauth-google-oauth2'
+gem 'a9n'
+gem 'google-api-client', '0.8.2', require: 'google/api_client'
 
 gem 'rails', '~> 5.1.2'
 gem 'pg'
@@ -17,6 +20,8 @@ gem 'coffee-rails', '~> 4.2'
 gem 'jbuilder', '~> 2.5'
 gem 'httparty'
 gem 'jquery-rails', '~> 4.3', '>= 4.3.1'
+gem 'sidekiq'
+gem 'whenever', require: false
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -33,6 +38,7 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'awesome_print'
+  gem 'letter_opener'
 end
 
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]

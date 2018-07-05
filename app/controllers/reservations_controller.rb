@@ -28,6 +28,8 @@ class ReservationsController < ApplicationController
 
   private
 
+
+
   def book
     @book ||= Book.find(params[:book_id])
   end

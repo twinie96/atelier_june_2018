@@ -17,16 +17,20 @@ class ReservationsHandler
     return unless can_be_taken?
 
     if book.available_reservation.present?
+      perform_expiration_worker(book.available_reservation)
       book.available_reservation.update_attributes(status: 'TAKEN')
+      notify_user_calendar
     else
-      book.reservations.create(user: user, status: 'TAKEN')
+      perform_expiration_worker(book.reservations.create(user: user, status: 'TAKEN'))
     end
   end
 
   def give_back
     ActiveRecord::Base.transaction do
       book.reservations.find_by(status: 'TAKEN').update_attributes(status: 'RETURNED')
+      #
       next_in_queue.update_attributes(status: 'AVAILABLE') if next_in_queue.present?
+      notify_user_calendar
     end
   end
 
@@ -53,4 +57,15 @@ class ReservationsHandler
   private
   attr_reader :user, :book
 
+  def perform_expiration_worker(res)
+    ::BookReservationExpireWorker.perform_at(res.expires_at-1.day, res.book_id)
+  end
+
+  def notify_user_calendar
+    UserCalendarNotifier.new(user).perform(provide_reservation)
+  end
+
+  def provide_reservation
+    book.reservations.where(user: user).last
+  end
 end
